@@ -103,7 +103,7 @@ def show_violations():
                     <td>{row[0]}</td>
                     <td><b>{row[1]}</b></td>
                     <td style="color: #ff6b81;">{row[2]} km/h</td>
-                    <td>{row[3]} km/h 60 (+5)</td>
+                    <td>{row[3]} (60+5) km/h</td>
                     <td><span style="color: #eccc68;">📍 {row[4]}</span></td>
                     <td>{row[5]}</td>
                 </tr>
