@@ -78,15 +78,15 @@ def show_violations():
         </style>
     </head>
     <body>
-        <h2>📸 Зафиксированные нарушения скорости</h2>
+        <h2>📸 Zafiksowane przekróczenia prędkości</h2>
         <table>
             <tr>
                 <th>ID</th>
-                <th>Игрок</th>
-                <th>Скорость</th>
-                <th>Лимит</th>
-                <th>Место</th>
-                <th>Время (UTC)</th>
+                <th>Gracz</th>
+                <th>Prędkość</th>
+                <th>Ograniczenie</th>
+                <th>Miejsce</th>
+                <th>Czas (UTC)</th>
             </tr>
     """
     for row in rows:
@@ -94,8 +94,8 @@ def show_violations():
             <tr>
                 <td>{row[0]}</td>
                 <td><b>{row[1]}</b></td>
-                <td style="color: #ff6b81;">{row[2]} км/ч</td>
-                <td>{row[3]} км/ч</td>
+                <td style="color: #ff6b81;">{row[2]} km/h</td>
+                <td>{row[3]} km/h</td>
                 <td><span style="color: #eccc68;">📍 {row[4]}</span></td>
                 <td>{row[5]}</td>
             </tr>
