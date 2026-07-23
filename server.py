@@ -86,13 +86,13 @@ def show_violations():
             </style>
         </head>
         <body>
-            <h2>📸 Zarejestrowane Przekroczenia Prędkości</h2>
+            <h2>📸 Zafiksowane Przekroczenia Prędkości</h2>
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Gracz</th>
                     <th>Prędkość</th>
-                    <th>Limit</th>
+                    <th>Ograniczenie</th>
                     <th>Lokalizacja</th>
                     <th>Czas (UTC)</th>
                 </tr>
