@@ -86,6 +86,7 @@ def show_violations():
             </style>
         </head>
         <body>
+            <h1>Centrum Automatycznego Nadzoru nad Ruchem Drogowym GITD</h1>
             <h2>📸 Zafiksowane Przekroczenia Prędkości</h2>
             <table>
                 <tr>
