@@ -3,19 +3,29 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Инициализация и создание таблицы в SQLite
+# Инициализация и авто-миграция БД
 def init_db():
     conn = sqlite3.connect('speed_camera.db')
     cursor = conn.cursor()
+    
+    # Создаем таблицу, если ее еще нет
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS violations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL,
             speed INTEGER NOT NULL,
             speed_limit INTEGER NOT NULL,
+            location TEXT DEFAULT 'Не указано',
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+    
+    # Добавляем колонку location, если таблица создавалась раньше без нее
+    try:
+        cursor.execute("ALTER TABLE violations ADD COLUMN location TEXT DEFAULT 'Не указано'")
+    except sqlite3.OperationalError:
+        pass # Колонка уже существует
+
     conn.commit()
     conn.close()
 
@@ -29,34 +39,30 @@ def add_violation():
     username = data['username']
     speed = data['speed']
     speed_limit = data.get('speed_limit', 0)
+    location = data.get('location', 'Неизвестное место') # Получаем место
 
-    # Запись нарушения в базу данных
+    # Запись в SQLite
     conn = sqlite3.connect('speed_camera.db')
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO violations (username, speed, speed_limit) VALUES (?, ?, ?)",
-        (username, speed, speed_limit)
+        "INSERT INTO violations (username, speed, speed_limit, location) VALUES (?, ?, ?, ?)",
+        (username, speed, speed_limit, location)
     )
     conn.commit()
     conn.close()
 
-    print(f"📸 [БД] Зафиксировано нарушение: {username} | {speed} км/ч (Лимит: {speed_limit})")
+    print(f"📸 [БД] Нарушение: {username} | {speed} км/ч | Место: {location}")
     return jsonify({"status": "success"}), 200
 
-if __name__ == '__main__':
-    init_db()
-    print("🚀 Сервер запущен на http://127.0.0.1:5000")
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
+# HTML-таблица с добавленным столбцом "Место"
 @app.route('/admin/violations', methods=['GET'])
 def show_violations():
     conn = sqlite3.connect('speed_camera.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT id, username, speed, speed_limit, timestamp FROM violations ORDER BY id DESC")
+    cursor.execute("SELECT id, username, speed, speed_limit, location, timestamp FROM violations ORDER BY id DESC")
     rows = cursor.fetchall()
     conn.close()
 
-    # Формируем простую HTML-таблицу для браузера
     html = """
     <!DOCTYPE html>
     <html>
@@ -79,6 +85,7 @@ def show_violations():
                 <th>Игрок</th>
                 <th>Скорость</th>
                 <th>Лимит</th>
+                <th>Место</th>
                 <th>Время (UTC)</th>
             </tr>
     """
@@ -89,7 +96,8 @@ def show_violations():
                 <td><b>{row[1]}</b></td>
                 <td style="color: #ff6b81;">{row[2]} км/ч</td>
                 <td>{row[3]} км/ч</td>
-                <td>{row[4]}</td>
+                <td><span style="color: #eccc68;">📍 {row[4]}</span></td>
+                <td>{row[5]}</td>
             </tr>
         """
     html += """
@@ -98,3 +106,7 @@ def show_violations():
     </html>
     """
     return html
+
+if __name__ == '__main__':
+    init_db()
+    app.run(host='0.0.0.0', port=5000, debug=True)
