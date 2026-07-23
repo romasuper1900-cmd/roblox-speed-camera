@@ -85,7 +85,7 @@ def show_violations():
                 <th>Gracz</th>
                 <th>Prędkość</th>
                 <th>Ograniczenie</th>
-                <th>Miejsce</th>
+                <th>Miejsce fiksacji</th>
                 <th>Czas (UTC)</th>
             </tr>
     """
